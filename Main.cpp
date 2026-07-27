@@ -1,3 +1,9 @@
+/* 
+    Sources I learned from:
+    - Basics from the book
+    - Lighting from https://math.hws.edu/graphicsbook/c4/s2.html and from https://www.cse.msu.edu/~cse872/tutorial3.html
+*/
+
 #include <iostream>
 #include <GL/freeglut.h>
 #include "CommonLibraries.h"
@@ -46,6 +52,21 @@ Pyramid pyramid;
 double rotateDegreeMain = 0;
 double rotateDegreeSecond = 0;
 
+
+/* Materials */
+GLfloat red[] = { 1.0f,0.0f,0.0f,1.0f };
+GLfloat specular[] = {1.0f,1.0f,1.0f,1.0f};
+GLfloat whiteSpecular[] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat emission[] = {1.0f, 1.0f, 0.5f, 1.0f};
+GLfloat bulbEmission[] = {1.0f, 1.0f, 0.7f, 1.0f};
+GLfloat bulbLight[]  = {1.0f, 1.0f, 0.0f, 1.0f};
+
+/* Light attributes */
+float noEmission[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+/* Bulb attributes: */
+float bulbColor[] = { 1.0f, 1.0f , 0.93f , 1.0f };
+GLfloat bulbPos[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+
 /* Initialize OpenGL Graphics */
 void initGL() {
     glClearColor(0.0f, 0.0f, 0.2f, 1.0f); // Set background color to black and opaque
@@ -55,6 +76,13 @@ void initGL() {
     glDepthFunc(GL_LEQUAL);    // Set the type of depth-test
     glShadeModel(GL_SMOOTH);   // Enable smooth shading
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);  // Nice perspective corrections
+
+    glEnable(GL_NORMALIZE); // convert every normal to a unit-normal. (For every glNormal3d(x, y, z); it does calculation and converts to a unit-vector)
+
+    // Enable lighting
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
 }
 
 void display() {
@@ -67,11 +95,11 @@ void display() {
     gluLookAt(cameraX, cameraY, cameraZ,       // Camera position
         targetX, targetY, targetZ,  // Look-at target
         upX, upY, upZ);
+    glPushMatrix();
+
 
     /* Table */
     rectangle.drawRectangle(4.0, 2.6, tableHeight, 0, 0, 0.5);
-
-    glPushMatrix();
 
     glTranslatef(-1.3f, tableHeight / 2.0f, 0.8f);  // Move right and into the screen
     glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
@@ -139,6 +167,7 @@ void display() {
     cylinder.drawCylinder(0.06f, topHingeHeight, 140, 140, 145);
     glPushMatrix();
 
+    
     /* The bulb's cover (housing)*/
     glTranslatef(0.0f, 0.0f, 0.025);
     cylinder.drawCylinder(0.048f, 0.15f, 140, 140, 145);
@@ -150,15 +179,25 @@ void display() {
     glPopMatrix();
 
 
-    /*Bulb connector*/
+
+
+    /*Bulb connector*/  
     glTranslatef(0.0f, 0.0f, 0.125);
     cylinder.drawCylinder(0.03f, 0.15, 0, 0, 0);
     glPushMatrix();
+    glMaterialfv(
+        GL_FRONT_AND_BACK,
+        GL_AMBIENT_AND_DIFFUSE,
+        bulbLight
+    );
 
     /* Bulb */
-    glTranslatef(0.0f, 0.0f, 0.25);
-    glColor4f(1.0, 1.0, 0, 0.1f);
+    glTranslatef(0.0f, 0.0f, 0.25f);
+    //Light:
+    glLightfv(GL_LIGHT0, GL_POSITION, bulbPos);
+    glMaterialfv(GL_FRONT, GL_EMISSION, bulbColor);
     glutSolidSphere(0.05, 20, 20);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, noEmission);
 
     glPopMatrix(); // upper-arm origin
     glPopMatrix(); // common arm origin

@@ -14,10 +14,15 @@ void Cylinders::drawCylinder(GLfloat radius, GLfloat height, GLubyte R, GLubyte 
     while (angle < 2 * PI) {
         x = radius * cos(angle);
         y = radius * sin(angle);
+
+        glNormal3f(cos(angle), sin(angle), 0.0f);
+
         glVertex3f(x, y, height);
         glVertex3f(x, y, 0.0);
         angle = angle + angle_stepsize;
     }
+    glNormal3f(1.0f, 0.0f, 0.0f);
+
     glVertex3f(radius, 0.0, height);
     glVertex3f(radius, 0.0, 0.0);
     glEnd();
@@ -25,6 +30,9 @@ void Cylinders::drawCylinder(GLfloat radius, GLfloat height, GLubyte R, GLubyte 
     /** Draw the circle on top of cylinder */
     glColor3ub(R, G, B);
     glBegin(GL_POLYGON);
+
+    glNormal3f(0.0f, 0.0f, 1.0f);
+
     angle = 0.0;
     while (angle < 2 * PI) {
         x = radius * cos(angle);
@@ -42,6 +50,7 @@ void Cubes::drawCube(double r, double g, double b){
         // Top face (y = 1.0f)
         // Define vertices in counter-clockwise (CCW) order with normal pointing out
         glColor3f(0.0f, 1.0f, 0.0f);     // Green
+        glNormal3d(0.0f, 1.0f, 0.0f);
         glVertex3f(1.0f, 1.0f, -1.0f);
         glVertex3f(-1.0f, 1.0f, -1.0f);
         glVertex3f(-1.0f, 1.0f, 1.0f);
@@ -49,6 +58,7 @@ void Cubes::drawCube(double r, double g, double b){
 
         // Bottom face (y = -1.0f)
         glColor3f(1.0f, 0.5f, 0.0f);     // Orange
+        glNormal3d(0.0f, -1.0f, 0.0f);
         glVertex3f(1.0f, -1.0f, 1.0f);
         glVertex3f(-1.0f, -1.0f, 1.0f);
         glVertex3f(-1.0f, -1.0f, -1.0f);
@@ -56,6 +66,7 @@ void Cubes::drawCube(double r, double g, double b){
 
         // Front face  (z = 1.0f)
         glColor3f(1.0f, 0.0f, 0.0f);     // Red
+        glNormal3d(0.0f, 0.0f, 1.0f);
         glVertex3f(1.0f, 1.0f, 1.0f);
         glVertex3f(-1.0f, 1.0f, 1.0f);
         glVertex3f(-1.0f, -1.0f, 1.0f);
@@ -63,6 +74,7 @@ void Cubes::drawCube(double r, double g, double b){
 
         // Back face (z = -1.0f)
         glColor3f(1.0f, 1.0f, 0.0f);     // Yellow
+        glNormal3d(0.0f, 0.0f, -1.0f);
         glVertex3f(1.0f, -1.0f, -1.0f);
         glVertex3f(-1.0f, -1.0f, -1.0f);
         glVertex3f(-1.0f, 1.0f, -1.0f);
@@ -70,6 +82,7 @@ void Cubes::drawCube(double r, double g, double b){
 
         // Left face (x = -1.0f)
         glColor3f(0.0f, 0.0f, 1.0f);     // Blue
+        glNormal3d(-1.0f, 0.0f, 0.0f);
         glVertex3f(-1.0f, 1.0f, 1.0f);
         glVertex3f(-1.0f, 1.0f, -1.0f);
         glVertex3f(-1.0f, -1.0f, -1.0f);
@@ -77,6 +90,7 @@ void Cubes::drawCube(double r, double g, double b){
 
         // Right face (x = 1.0f)
         glColor3f(1.0f, 0.0f, 1.0f);     // Magenta
+        glNormal3d(1.0f, 0.0f, 0.0f);
         glVertex3f(1.0f, 1.0f, -1.0f);
         glVertex3f(1.0f, 1.0f, 1.0f);
         glVertex3f(1.0f, -1.0f, 1.0f);
@@ -93,13 +107,16 @@ void Rectangles::drawRectangle(double width, double length, double height, doubl
         // Top face (y = 1.0f)
         // Define vertices in counter-clockwise (CCW) order with normal pointing out
         glColor3f(r, g, b);
+        glNormal3d(0.0f, 1.0f, 0.0f);
         glVertex3f(-halfWidth, top, -halfLength);
-        glVertex3f(halfWidth, top, -halfLength);
-        glVertex3f(halfWidth, top, halfLength);
         glVertex3f(-halfWidth, top, halfLength);
+        glVertex3f(halfWidth, top, halfLength);
+        glVertex3f(halfWidth, top, -halfLength);
+
 
         // Bottom face (y = -1.0f)
         //glColor3f(1.0f, 0.5f, 0.0f);     // Orange
+        glNormal3d(0.0f, -1.0f, 0.0f);
         glVertex3f(-halfWidth, -top, -halfLength);
         glVertex3f(halfWidth, -top, -halfLength);
         glVertex3f(halfWidth, -top, halfLength);
@@ -107,6 +124,7 @@ void Rectangles::drawRectangle(double width, double length, double height, doubl
 
         // Front face  (z = 1.0f)
         //glColor3f(1.0f, 0.0f, 0.0f);     // Red
+        glNormal3d(0.0f, 0.0f, 1.0f);        
         glVertex3f(halfWidth, top, halfLength);
         glVertex3f(-halfWidth, top, halfLength);
         glVertex3f(-halfWidth, -top, halfLength);
@@ -114,6 +132,7 @@ void Rectangles::drawRectangle(double width, double length, double height, doubl
 
         // Back face (z = -1.0f)
         //glColor3f(1.0f, 1.0f, 0.0f);     // Yellow
+        glNormal3d(0.0f, 0.0f, -1.0f);
         glVertex3f(halfWidth, -top, -halfLength);
         glVertex3f(-halfWidth, -top, -halfLength);
         glVertex3f(-halfWidth, top, -halfLength);
@@ -121,13 +140,15 @@ void Rectangles::drawRectangle(double width, double length, double height, doubl
 
         // Left face (x = -1.0f)
         //glColor3f(0.0f, 0.0f, 1.0f);     // Blue
+        glNormal3d(-1.0f, 0.0f, 0.0f);
         glVertex3f(-halfWidth, top, halfLength);
         glVertex3f(-halfWidth, top, -halfLength);
         glVertex3f(-halfWidth, -top, -halfLength);
         glVertex3f(-halfWidth, -top, halfLength);
 
         // Right face (x = 1.0f)
-/*        glColor3f(r, g, b);   */  
+/*        glColor3f(r, g, b);   */ 
+        glNormal3d(1.0f, 0.0f, 0.0f);
         glVertex3f(halfWidth, top, -halfLength);
         glVertex3f(halfWidth, top, halfLength);
         glVertex3f(halfWidth, -top, halfLength);
@@ -142,25 +163,29 @@ void Pyramid::drawPyramid(double width, double length, double height, double r, 
     float top = height / 2;
 
     glBegin(GL_TRIANGLES);           // Begin drawing the pyramid with 4 triangles
-    // Front
-    glColor3ub(r, g, b);
-    glVertex3f(0.0f, halfLength, 0.0f);
-    glVertex3f(-halfWidth, -halfLength, top);
-    glVertex3f(halfWidth, -halfLength, top);
+        // Front
+        glColor3ub(r, g, b);
+        glNormal3d(0.0f, top, 2*halfLength); // N = (B-A) X (C-A)
+        glVertex3f(0.0f, halfLength, 0.0f); // A
+        glVertex3f(-halfWidth, -halfLength, top); // B
+        glVertex3f(halfWidth, -halfLength, top); // C
 
-    // Right
-    glVertex3f(0.0f, halfLength, 0.0f);
-    glVertex3f(halfWidth, -halfLength, top);
-    glVertex3f(halfWidth, -halfLength, -top);
+        // Right
+        glNormal3d(2*halfLength, halfWidth, 0);
+        glVertex3f(0.0f, halfLength, 0.0f);
+        glVertex3f(halfWidth, -halfLength, top);
+        glVertex3f(halfWidth, -halfLength, -top);
 
-    // Back
-    glVertex3f(0.0f, halfLength, 0.0f);
-    glVertex3f(halfWidth, -halfLength, -top);
-    glVertex3f(-halfWidth, -halfLength, -top);
+        // Back
+        glNormal3d(0, top, -2*halfLength);
+        glVertex3f(0.0f, halfLength, 0.0f);
+        glVertex3f(halfWidth, -halfLength, -top);
+        glVertex3f(-halfWidth, -halfLength, -top);
 
-    // Left
-    glVertex3f(0.0f, halfLength, 0.0f);
-    glVertex3f(-halfWidth, -halfLength, -top);
-    glVertex3f(-halfWidth, -halfLength, top);
+        // Left
+        glNormal3d(-2*halfLength, halfWidth, 0);
+        glVertex3f(0.0f, halfLength, 0.0f);
+        glVertex3f(-halfWidth, -halfLength, -top);
+        glVertex3f(-halfWidth, -halfLength, top);
     glEnd();   // Done drawing the pyramid
 }
