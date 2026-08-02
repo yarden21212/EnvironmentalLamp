@@ -103,7 +103,7 @@ void display() {
     try {
         glPushMatrix();
         /* Table */
-        material.metal("d", blueColor);
+        material.metal("frontBack", blueColor);
         rectangle.drawRectangle(4.0, 2.6, tableHeight, 0, 0, 0.5);
 
         glTranslatef(-1.3f, tableHeight / 2.0f, 0.8f);  // Move right and into the screen
