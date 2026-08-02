@@ -128,11 +128,15 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Materials.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Shapes.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonLibraries.h" />
+    <ClInclude Include="GlobalVariables.h" />
+    <ClInclude Include="Main.h" />
     <ClInclude Include="Materials.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Shapes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

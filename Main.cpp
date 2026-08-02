@@ -1,89 +1,18 @@
 /* 
     Sources I learned from:
     - Basics from the book
-    - Lighting from https://math.hws.edu/graphicsbook/c4/s2.html and from https://www.cse.msu.edu/~cse872/tutorial3.html
+    - Lighting from https://math.hws.edu/graphicsbook/c4/s2.html, https://www.cse.msu.edu/~cse872/tutorial3.html
+    - How to draw cylinder from https://gist.github.com/nikAizuddin/5ea402e9073f1ef76ba6
+    - How to work with the mouse - used documentations 7.4 - 7.6: https://www.opengl.org/resources/libraries/glut/spec3/node49.html 
+    - How to create pop-up menu (used charGPT for completing itm because it missed few explanations): https://stackoverflow.com/questions/14370/glut-pop-up-menus + https://www.opengl.org/resources/libraries/glut/spec3/node37.html#SECTION00072000000000000000
 */
 
-#include <iostream>
-#include <GL/freeglut.h>
-#include "CommonLibraries.h"
+#include "Main.h"
 
-#include "Shapes.h"
-#include "Materials.h"
-
-#define PI 3.1415927
-
-int windowW = 800;
-int windowH = 800;
-
-// Camera's position
-double cameraX = -2.6f, cameraY = 1.3f, cameraZ = -0.2f;
-// Look-At target (where the camera is facing)
-double targetX = 0.0f, targetY = 0.0f, targetZ = 0.0f;
-// Up Vector (which way is "up")
-double upX = 0.0f, upY = 1.0f, upZ = 0.0f;
-
-/* Clipping window limits */
-double xwMin = -1.0f, ywMin = -1.0f, xwMax = 1.0f, ywMax = 1.0f;
-/* Near, Far planes */
-double nearPlane = 1.0f, farPlane = 30.0f;
-
-
-char title[] = "3D Table Lamp";
-
-
-/* - - - - - - - - - - - - - Shapes - - - - - - - - - - - - */
-double tableHeight = 0.6;
-double baseHeight = 0.1;
-double lowerBodyHeight = 2;
-double connectorHeight = 0.2;
-double upperBodyHeight = 2;
-double bottomConnectorHeight = 0.5;
-double armHeight = 0.2;
-double topHingeHeight = 0.03f;
-
-
-/* Objects initialization*/
-Cubes cube;
-Cylinders cylinder;
-Rectangles rectangle;
-Pyramid pyramid;
-MaterialType material;
-
-/* Operation variables */
-double rotateDegreeMain = 0;
-double rotateDegreeSecond = 0;
-
-/* Colors */
-float silverColor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
-float goldColor[] = { 0.83f, 0.69f, 0.22f, 1.0f };
-float copperColor[] = { 0.95f, 0.64f, 0.54f, 1.0f };
-float bronzeColor[] = { 0.80f, 0.50f, 0.20f, 1.0f };
-GLfloat red[] = { 1.0f,0.0f,0.0f,1.0f };
-float blueColor[] = { 0.27f, 0.51f, 0.71f, 1.0f };
-float whiteColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-float greenColor[] = { 0.0f, 1.0f, 0.0f, 1.0f };
-float yellowColor[] = {1.0f, 1.0f, 0.0f, 1.0f };
-
-
-/* Materials */
-GLfloat specular[] = {1.0f,1.0f,1.0f,1.0f};
-GLfloat whiteSpecular[] = {1.0f, 1.0f, 1.0f, 1.0f};
-GLfloat emission[] = {1.0f, 1.0f, 0.5f, 1.0f};
-GLfloat bulbEmission[] = {1.0f, 1.0f, 0.7f, 1.0f};
-GLfloat bulbLight[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-/* Light attributes */
-float noEmission[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-/* Bulb attributes: */
-float bulbColor[] = { 1.0f, 1.0f, 0.93f, 1.0f };
-GLfloat bulbPos[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-
-/* Books */
-float bookMovement = 0.0f;
-float bookMovementDegree = 0.0f;
-
-
+void menuCallback(int item)
+{
+    gMenu.menu(item);
+}
 
 /* Initialize OpenGL Graphics */
 void initGL() {
@@ -110,22 +39,54 @@ void initGL() {
 
 
 void generateBook(float color[]) {
-    material.plastic("frontback", red);
+    material.plastic("frontBack", red);
     rectangle.drawRectangle(0.3, 0.2, 0.01, 0.0f, 0.0f, 1.0f);
     material.noMaterial();
 
     for (int i = 0; i < 10; i++) {
         glTranslatef(0.0f, -0.01f, 0.0f);
         if (i == 9) {
-            material.plastic("frontback", color);
+            material.plastic("frontBack", color);
         }
         else
         {
-            material.plastic("frontback", whiteColor);
+            material.plastic("frontBack", whiteColor);
         }
         rectangle.drawRectangle(0.3f, 0.2f, 0.01f, 0, 0, 0);
         material.noMaterial();
     }
+}
+
+/* --------------------------- MOUSE -------------------------*/
+void mouse(int button, int state, int x, int y)
+{
+    if (state != GLUT_DOWN)
+        return;
+
+    if (button == 3)
+    {
+        // Wheel scrolled up
+        cameraY += 0.1;
+    }
+    else if (button == 4)
+    {
+        // Wheel scrolled down
+        cameraY -= 0.1;
+    }
+
+    /* Camera Movement */
+    if (button == GLUT_LEFT_BUTTON) {
+        if (state == GLUT_DOWN) {
+            lightOn = !lightOn;
+        }
+    }
+    else if (button == GLUT_RIGHT_BUTTON) {
+        //if (state == GLUT_DOWN) {
+        //    lightOn = false;
+        //}
+    }
+
+    glutPostRedisplay(); // Request a redraw to update the camera
 }
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -138,253 +99,276 @@ void display() {
         targetX, targetY, targetZ,  // Look-at target
         upX, upY, upZ);
 
-    glPushMatrix();
-    /* Table */
-    material.metal("frontback", blueColor);
-    rectangle.drawRectangle(4.0, 2.6, tableHeight, 0, 0, 0.5);
 
-    glTranslatef(-1.3f, tableHeight / 2.0f, 0.8f);  // Move right and into the screen
-    glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-    material.noMaterial();
+    try {
+        glPushMatrix();
+        /* Table */
+        material.metal("d", blueColor);
+        rectangle.drawRectangle(4.0, 2.6, tableHeight, 0, 0, 0.5);
 
-    /* Lamp's base */
-    material.metal("frontback", copperColor);
-    cylinder.drawCylinder(0.3, baseHeight, 210, 210, 215);
-    /* Small screw decoration for the connector*/
-    glTranslatef(0.0f, 0.0f, baseHeight * 1.05);
-    cylinder.drawCylinder(0.05, baseHeight, 168, 169, 173);
-    material.noMaterial();
-
-    /* Pyramid connector for the arms */
-    glTranslatef(0.0f, 0.0f, baseHeight);
-    glPushMatrix();
-    glRotatef(30.0f, 1.0f, 0.0f, 0.0f);
-    pyramid.drawPyramid(0.2, baseHeight *2, 0.2, 140, 140, 145);
-    glPopMatrix();
-
-    /* Lamp's arms*/
-    material.metal("frontback", silverColor);
-    glTranslatef(0.0f, 0.0f, baseHeight/2.5);
-    const double armRadius = 0.03;
-    const double armOffset = 0.05;
-    glPushMatrix();
-
-    glTranslatef(-armOffset, -0.1f, 0.0f);
-    glRotatef(rotateDegreeMain, 1.0f, 0.0f, 0.0f);
-    /* First arm */
-    cylinder.drawCylinder(armRadius, armHeight, 210, 210, 215);
-    glPushMatrix();
-
-    /* Second arm */
-    glTranslatef(2*armOffset, 0.0f, 0.0f);
-    cylinder.drawCylinder(armRadius, armHeight, 250, 0, 0);
-    material.noMaterial();
-    glPopMatrix();
-
-
-    /* Lamp's arms' connector */
-    glTranslatef(0.0f, 0.0f, armHeight);
-    glPushMatrix();
-    glTranslatef(armOffset, 0.0f, 0.0f);
-    material.metal("frontback", copperColor);
-    cylinder.drawCylinder(0.1, baseHeight / 2, 210, 210, 215);
-    glPopMatrix();
-    material.noMaterial();
-
-    /* Top arms */
-    glTranslatef(0.0f, 0.0f, baseHeight / 2);
-
-    glRotatef(-10.0f + rotateDegreeSecond, 1.0f, 0.0f, 0.0f);
-    /* First arm */
-    material.metal("frontback", silverColor);
-    cylinder.drawCylinder(armRadius, armHeight, 210, 210, 215);
-    glPushMatrix();
-
-    /* Second arm */
-    glTranslatef(2 * armOffset, 0.0f, 0.0f);
-    cylinder.drawCylinder(armRadius, armHeight, 250, 0, 0);
-    glPopMatrix();
-    material.noMaterial();
-
-    /* Lamp's arms' connector */
-    material.metal("frontback", copperColor);
-    glTranslatef(0.0f, 0.0f, armHeight);
-    glPushMatrix();
-    glTranslatef(armOffset, 0.0f, 0.0f);
-    cylinder.drawCylinder(0.08f, baseHeight / 2, 210, 210, 215);
-    glPopMatrix();
-    material.noMaterial();
-
-    /* Top hinge */
-    material.metal("frontback", blueColor);
-    glTranslatef(0.0f, 0.0f, baseHeight / 2);
-    glTranslatef(armOffset, 0.0f, 0.0f);
-    cylinder.drawCylinder(0.06f, topHingeHeight, 140, 140, 145);
-    glPushMatrix();
-    material.noMaterial();
-    
-    /* The bulb's cover (housing)*/
-    glTranslatef(0.0f, 0.0f, 0.025);
-    material.metal("frontback", blueColor);
-    cylinder.drawCylinder(0.048f, 0.15f, 140, 140, 145);
-    material.noMaterial();
-    glPopMatrix();
-    glPushMatrix();
-    glTranslatef(0.0f, 0.0f, 0.4);
-    glRotatef(180, 1.0f, 0.0f, 0.0f);
-    material.metal("frontback", copperColor);
-    glutSolidCone(0.1f, 0.4, 20, 20);
-    material.noMaterial();
-    glPopMatrix();
-
-
-
-    /*Bulb connector*/  
-    glTranslatef(0.0f, 0.0f, 0.125);
-    glPushMatrix();
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, bulbLight);
-    cylinder.drawCylinder(0.03f, 0.15, 0, 0, 0);
-    float noAmbient[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, noAmbient);
-
-    /* Bulb */
-    glTranslatef(0.0f, 0.0f, 0.25f);
-    //Light:
-    glLightfv(GL_LIGHT0, GL_POSITION, bulbPos);
-    glMaterialfv(GL_FRONT, GL_EMISSION, bulbColor);
-    glutSolidSphere(0.05, 20, 20);
-    glMaterialfv(GL_FRONT, GL_EMISSION, noEmission);
-
-    glPopMatrix(); // upper-arm origin
-    glPopMatrix(); // common arm origin
-
-    glTranslatef(-0.2f, 0.9f, -0.235f);
-    glPushMatrix();
-    /* normal Books */
-    glTranslatef(0.0f, 0.8f, 0.0f);
-    glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-    generateBook(yellowColor);
-    glTranslatef(0.0f, 0.0f, 0.01);
-    generateBook(greenColor);
-    glTranslatef(0.0f, 0.0f, 0.01);
-    generateBook(blueColor);
-    glPopMatrix();
-
-
-    /* Interactive  book */
-    glPushMatrix();
-    glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-    material.plastic("frontback", red);
-    rectangle.drawRectangle(0.3, 0.2, 0.01, 0.0f,0.0f,1.0f);
-    material.noMaterial();
-
-    for (int i = 0; i < 10; i++) {
-        glTranslatef(0.0f, -0.01f, 0.0f);
-        if (i == 9) {
- /*           glTranslatef(0.0f, -0.1f, 0.1f);
-            glRotatef(-90, 1.0f, 0.0f, 0.0f);*/
-            glTranslatef(0.0f, -bookMovement, bookMovement);
-            glRotatef(-bookMovementDegree, 1.0f, 0.0f, 0.0f);
-            material.plastic("frontback", red);
-        }
-        else
-        {
-            material.plastic("frontback", whiteColor);
-        }
-        rectangle.drawRectangle(0.3f, 0.2f, 0.01f, 0, 0, 0);
+        glTranslatef(-1.3f, tableHeight / 2.0f, 0.8f);  // Move right and into the screen
+        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
         material.noMaterial();
+
+        /* Lamp's base */
+        material.metal("frontBack", copperColor);
+        cylinder.drawCylinder(0.3f, baseHeight, 210, 210, 215);
+        /* Small screw decoration for the connector*/
+        glTranslatef(0.0f, 0.0f, baseHeight * 1.05f);
+        cylinder.drawCylinder(0.05f, baseHeight, 168, 169, 173);
+        material.noMaterial();
+
+        /* Pyramid connector for the arms */
+        glTranslatef(0.0f, 0.0f, baseHeight);
+        glPushMatrix();
+        glRotatef(30.0f, 1.0f, 0.0f, 0.0f);
+        pyramid.drawPyramid(0.2, baseHeight * 2, 0.2f, 140, 140, 145);
+        glPopMatrix();
+
+        /* Lamp's arms*/
+        material.metal("frontBack", silverColor);
+        glTranslatef(0.0f, 0.0f, baseHeight / 2.5f);
+        const GLfloat armRadius = 0.03f;
+        const GLfloat armOffset = 0.05f;
+        glPushMatrix();
+
+        glTranslatef(-armOffset, -0.1f, 0.0f);
+        glRotatef(rotateDegreeMain, 1.0f, 0.0f, 0.0f);
+        /* First arm */
+        cylinder.drawCylinder(armRadius, armHeight, 210, 210, 215);
+        glPushMatrix();
+
+        /* Second arm */
+        glTranslatef(2 * armOffset, 0.0f, 0.0f);
+        cylinder.drawCylinder(armRadius, armHeight, 250, 0, 0);
+        material.noMaterial();
+        glPopMatrix();
+
+
+        /* Lamp's arms' connector */
+        glTranslatef(0.0f, 0.0f, armHeight);
+        glPushMatrix();
+        glTranslatef(armOffset, 0.0f, 0.0f);
+        material.metal("frontBack", copperColor);
+        cylinder.drawCylinder(0.1f, baseHeight / 2, 210, 210, 215);
+        glPopMatrix();
+        material.noMaterial();
+
+        /* Top arms */
+        glTranslatef(0.0f, 0.0f, baseHeight / 2);
+
+        glRotatef(-10.0f + rotateDegreeSecond, 1.0f, 0.0f, 0.0f);
+        /* First arm */
+        material.metal("frontBack", silverColor);
+        cylinder.drawCylinder(armRadius, armHeight, 210, 210, 215);
+        glPushMatrix();
+
+        /* Second arm */
+        glTranslatef(2 * armOffset, 0.0f, 0.0f);
+        cylinder.drawCylinder(armRadius, armHeight, 250, 0, 0);
+        glPopMatrix();
+        material.noMaterial();
+
+        /* Lamp's arms' connector */
+        material.metal("frontBack", copperColor);
+        glTranslatef(0.0f, 0.0f, armHeight);
+        glPushMatrix();
+        glTranslatef(armOffset, 0.0f, 0.0f);
+        cylinder.drawCylinder(0.08f, baseHeight / 2, 210, 210, 215);
+        glPopMatrix();
+        material.noMaterial();
+
+        /* Top hinge */
+        material.metal("frontBack", blueColor);
+        glTranslatef(0.0f, 0.0f, baseHeight / 2);
+        glTranslatef(armOffset, 0.0f, 0.0f);
+        /*test*/
+        glRotatef(rotateDegreeTopHinge, 1.0f, 0.0f, 0.0f);
+        /*test*/
+        cylinder.drawCylinder(0.06f, topHingeHeight, 140, 140, 145);
+        glPushMatrix();
+        material.noMaterial();
+
+        /* The bulb's cover (housing)*/
+        glTranslatef(0.0f, 0.0f, 0.025f);
+        material.metal("frontBack", blueColor);
+        cylinder.drawCylinder(0.048f, 0.15f, 140, 140, 145);
+        material.noMaterial();
+        glPopMatrix();
+        glPushMatrix();
+        glTranslatef(0.0f, 0.0f, 0.4f);
+        glRotatef(180, 1.0f, 0.0f, 0.0f);
+        material.metal("frontBack", copperColor);
+        glutSolidCone(0.1f, 0.4, 20, 20);
+        material.noMaterial();
+        glPopMatrix();
+
+
+
+        /*Bulb connector*/
+        glTranslatef(0.0f, 0.0f, 0.125);
+        glPushMatrix();
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, bulbLight);
+        cylinder.drawCylinder(0.03f, 0.15f, 0, 0, 0);
+        float noAmbient[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, noAmbient);
+
+        /* Bulb */
+        glTranslatef(0.0f, 0.0f, 0.25f);
+        //Light:
+        if (lightOn) {
+            glEnable(GL_LIGHT0);
+            glLightfv(GL_LIGHT0, GL_POSITION, bulbPos);
+            glMaterialfv(GL_FRONT, GL_EMISSION, bulbColor);
+            glutSolidSphere(0.05, 20, 20);
+            glMaterialfv(GL_FRONT, GL_EMISSION, noEmission);
+        }
+        else {
+            glDisable(GL_LIGHT0);
+        }
+
+
+        glPopMatrix(); // upper-arm origin
+        glPopMatrix(); // common arm origin
+
+        glTranslatef(-0.2f, 0.9f, -0.235f);
+        glPushMatrix();
+        /* normal Books */
+        glTranslatef(0.0f, 0.8f, 0.0f);
+        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+        generateBook(yellowColor);
+        glTranslatef(0.0f, 0.0f, 0.01f);
+        generateBook(greenColor);
+        glTranslatef(0.0f, 0.0f, 0.01f);
+        generateBook(blueColor);
+        glPopMatrix();
+
+
+        /* Interactive  book */
+        glPushMatrix();
+        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+        material.plastic("frontBack", red);
+        rectangle.drawRectangle(0.3, 0.2, 0.01, 0.0f, 0.0f, 1.0f);
+        material.noMaterial();
+
+        for (int i = 0; i < 10; i++) {
+            glTranslatef(0.0f, -0.01f, 0.0f);
+            if (i == 9) {
+                /*           glTranslatef(0.0f, -0.1f, 0.1f);
+                           glRotatef(-90, 1.0f, 0.0f, 0.0f);*/
+                glTranslatef(0.0f, -bookMovement, bookMovement);
+                glRotatef(-bookMovementDegree, 1.0f, 0.0f, 0.0f);
+                material.plastic("frontBack", red);
+            }
+            else
+            {
+                material.plastic("frontBack", whiteColor);
+            }
+            rectangle.drawRectangle(0.3f, 0.2f, 0.01f, 0, 0, 0);
+            material.noMaterial();
+        }
+        glPopMatrix();
+
+
+
+        glPushMatrix();
+        glTranslatef(2.0f, 0.8f, 0.2f);
+        /* Teapot & cups */
+        glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+        glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
+        material.metal("frontBack", bronzeColor);
+        glutSolidTeapot(0.2);
+        material.noMaterial();
+
+        glTranslatef(0.5f, 0.0f, -0.1f);
+        material.plastic("frontBack", whiteColor);
+        glutSolidTeacup(0.2);
+        glTranslatef(0.0f, 0.0f, 0.4f);
+        glutSolidTeacup(0.2);
+        material.noMaterial();
+        glPopMatrix();
+
+
+        glTranslatef(0.8f, 0.8f, 0.0f);
+        /* PC's screen */
+        glPushMatrix();
+        glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+        rectangle.drawRectangle(0.3f, 0.2f, 0.01f, 0.0f, 0.0f, 1.0f);
+        glTranslatef(0.0f, 0.0f, 0.01f);
+        rectangle.drawRectangle(0.15f, 0.14f, 0.22f, 0.0f, 0.0f, 1.0f);
+        glTranslatef(0.0f, -0.4f, 0.0f);
+        float blackColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+        material.metal("frontBack", blackColor);
+        rectangle.drawRectangle(0.8f, 0.05, 0.6f, 0.0f, 0.0f, 1.0f);
+        material.noMaterial();
+        glPopMatrix();
+
+        glPopMatrix();
+        glPopMatrix(); // whole lamp matrix or whote table matrix (I'm not sure)
+
+        glutSwapBuffers();
     }
-    glPopMatrix();
-
-
-
-    glPushMatrix();
-    glTranslatef(2.0f, 0.8f, 0.2f);
-    /* Teapot & cups */
-    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-    glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);
-    material.metal("frontback", bronzeColor);
-    glutSolidTeapot(0.2);
-    material.noMaterial();
-
-    glTranslatef(0.5f, 0.0f, -0.1f);
-    material.plastic("frontback", whiteColor);
-    glutSolidTeacup(0.2);
-    glTranslatef(0.0f, 0.0f, 0.4f);
-    glutSolidTeacup(0.2);
-    material.noMaterial();
-    glPopMatrix();
-
-
-    glTranslatef(0.8f, 0.8f, 0.0f);
-    /* PC's screen */
-    glPushMatrix();
-    glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-    rectangle.drawRectangle(0.3f, 0.2f, 0.01f, 0.0f, 0.0f, 1.0f);
-    glTranslatef(0.0f, 0.0f, 0.01f);
-    rectangle.drawRectangle(0.15f, 0.14f, 0.22f, 0.0f, 0.0f, 1.0f);
-    glTranslatef(0.0f, -0.4f, 0.0f);
-    float blackColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    material.metal("frontback", blackColor);
-    rectangle.drawRectangle(0.8f, 0.05, 0.6f, 0.0f, 0.0f, 1.0f);
-    material.noMaterial();
-    glPopMatrix();
-
-    glPopMatrix();
-    glPopMatrix(); // whole lamp matrix or whote table matrix (I'm not sure)
-
-    glutSwapBuffers();
+    catch (std::invalid_argument e) {
+        std::cerr << "Exception caught: " << e.what() << std::endl;
+    }
+    
 }
 
 void specialKeys(int key, int x, int y) {
     if (key == GLUT_KEY_UP) {
-        cameraY += 0.1;
+        cameraX += cameraRotationUnit;
     }
     else if (key == GLUT_KEY_DOWN) {
-        cameraY -= 0.1;
+        cameraX -= cameraRotationUnit;
     }
     else if (key == GLUT_KEY_RIGHT) {
-        cameraX += 0.1;
+        cameraZ += cameraRotationUnit;
     }
     else if (key == GLUT_KEY_LEFT) {
-        cameraX -= 0.1;
-    }
-    else if (key == GLUT_KEY_F8) {
-        cameraZ += 0.1;
-    }
-    else if (key == GLUT_KEY_F9) {
-        cameraZ -= 0.1;
+        cameraZ -= cameraRotationUnit;
     }
     else if (key == GLUT_KEY_F1) {
-        rotateDegreeMain += 1;
+        rotateDegreeMain += jointRotationUnit;
     }
     else if (key == GLUT_KEY_F2) {
-        rotateDegreeMain -= 1;
+        rotateDegreeMain -= jointRotationUnit;
     }
     else if (key == GLUT_KEY_F3) {
-        rotateDegreeSecond += 1;
+        rotateDegreeSecond += jointRotationUnit;
     }
     else if (key == GLUT_KEY_F4) {
-        rotateDegreeSecond -= 1;
+        rotateDegreeSecond -= jointRotationUnit;
     }
     else if (key == GLUT_KEY_SHIFT_L) {
         if(bookMovement < 1 && bookMovementDegree < 90)
         {
-            bookMovement += 0.01;
+            bookMovement += 0.01f;
             bookMovementDegree += 10;
         }
     }
     else if (key == GLUT_KEY_SHIFT_R) {
         if (bookMovement > 0 && bookMovementDegree > 0)
         {
-            bookMovement -= 0.01;
+            bookMovement -= 0.01f;
             bookMovementDegree -= 10;
         }
     }
-    //else if (key == GLUT_KEY_CTRL_R) {
-    //    rotateDegree -= 1;
-    //}
-    std::cout << "cameraX: " << cameraX << ", cameraY:" << cameraY << ", cameraZ: " << cameraZ;
+    else if (key == GLUT_KEY_F8) {
+        if (rotateDegreeTopHinge >= -50)
+        {
+            rotateDegreeTopHinge -= 1;
+            std::cout << "top hinge: " << rotateDegreeTopHinge << std::endl;
+        }
+    }
+    else if (key == GLUT_KEY_F9) {
+        if (rotateDegreeTopHinge < 0)
+        {
+            rotateDegreeTopHinge += 1;
+            std::cout << "top hinge: " << rotateDegreeTopHinge << std::endl;
+        }
+    }
+
+
     glutPostRedisplay(); // Request a redraw to update the camera
 }
 void reshape(GLsizei width, GLsizei height) {  // GLsizei for non-negative integer
@@ -413,8 +397,27 @@ int main(int argc, char* argv[]) {
     glutDisplayFunc(display);       // Register callback handler for window re-paint event
     glutReshapeFunc(reshape);       // Register callback handler for window re-size event
     glutSpecialFunc(specialKeys);
+    glutMouseFunc(mouse);
+
+    /* Glut menu: */
+    // Create a menu
+    glutCreateMenu(menuCallback);
+
+    // Add menu items
+    glutAddMenuEntry("Reset scene (Press here!) ", GlutMenu::MENU_FIRST);
+    glutAddMenuEntry("SHIFT R+L to Open/Close the red book ", GlutMenu::MENU_SECOND);
+    glutAddMenuEntry("F1-F4 to control the bulb's joints (to move it)", GlutMenu::MENU_THIRD);
+    glutAddMenuEntry("Mouse-Wheel & Arrow Keys to control the camera ", GlutMenu::MENU_FOURTH);
+    glutAddMenuEntry("Left mouse to turn on/off the bulb ", GlutMenu::MENU_FIFTH);
+    glutAddMenuEntry("Thanks for using my program!! ", GlutMenu::MENU_SIXTH);
+
+    glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+    //glutMouseFunc(cameraMovement);
     initGL();                       // Our own OpenGL initialization
     //glutTimerFunc(0, timer, 0);     // First timer call immediately [NEW]
     glutMainLoop();                 // Enter the infinite event-processing loop
     return 0;
 }
+
+

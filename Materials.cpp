@@ -10,7 +10,7 @@ void MaterialType::metal(std::string side, float color[]) {
         face = GL_FRONT;
     else if (side == "back")
         face = GL_BACK;
-    else if (side == "frontback")
+    else if (side == "frontBack")
         face = GL_FRONT_AND_BACK;
     else {
         throwError();
@@ -34,7 +34,7 @@ void MaterialType::plastic(std::string side, float color[]) {
 		face = GL_FRONT;
 	else if (side == "back")
 		face = GL_BACK;
-	else if (side == "frontback")
+	else if (side == "frontBack")
 		face = GL_FRONT_AND_BACK;
 	else {
 		throwError();
@@ -73,5 +73,5 @@ void MaterialType::noMaterial() {
 
 void MaterialType::throwError() {
 	side = "none";
-	throw std::invalid_argument("Input is illegal: the only options are: front, back or frontback");
+	throw std::invalid_argument("Input is illegal: the only options are: front, back or frontBack");
 }
