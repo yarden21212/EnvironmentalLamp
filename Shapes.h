@@ -20,7 +20,7 @@ public:
 class Rectangles {
 
 public:
-    void drawRectangle(double width, double length, double height, double r, double g, double b);
+    void drawRectangle(double width, double length, double height, double r, double g, double b, GLuint texture);
 };
 
 class Pyramid {

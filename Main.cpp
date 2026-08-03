@@ -7,7 +7,14 @@
     - How to create pop-up menu (used charGPT for completing itm because it missed few explanations): https://stackoverflow.com/questions/14370/glut-pop-up-menus + https://www.opengl.org/resources/libraries/glut/spec3/node37.html#SECTION00072000000000000000
 */
 
+/* For image reading */
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+/* End of image libraries */
+
 #include "Main.h"
+#include "Texture.h"
 
 void menuCallback(int item)
 {
@@ -32,7 +39,6 @@ void initGL() {
 
     // Enable lighting
     glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, bulbLight);
     glLightfv(GL_LIGHT0, GL_SPECULAR, bulbLight);
 }
@@ -40,7 +46,7 @@ void initGL() {
 
 void generateBook(float color[]) {
     material.plastic("frontBack", red);
-    rectangle.drawRectangle(0.3, 0.2, 0.01, 0.0f, 0.0f, 1.0f);
+    rectangle.drawRectangle(0.3, 0.2, 0.01, 0.0f, 0.0f, 1.0f, 0);
     material.noMaterial();
 
     for (int i = 0; i < 10; i++) {
@@ -52,7 +58,7 @@ void generateBook(float color[]) {
         {
             material.plastic("frontBack", whiteColor);
         }
-        rectangle.drawRectangle(0.3f, 0.2f, 0.01f, 0, 0, 0);
+        rectangle.drawRectangle(0.3f, 0.2f, 0.01f, 0, 0, 0, 0);
         material.noMaterial();
     }
 }
@@ -88,9 +94,25 @@ void mouse(int button, int state, int x, int y)
 
     glutPostRedisplay(); // Request a redraw to update the camera
 }
+
+/* Control the power of the bulb's light (3 different light powers) */
+void controlLightPower() {
+    lightPower = (lightPower + 1) % 2;  // Now in use right now, but seems like an options for future if I want to display the current power
+    bulbPower -= (1.0f / 3.0f);         // The bulb has 3 powers 1/3, 2/3 and 1 which is defined as glMaterialfv(GL_FRONT, GL_EMISSION, bulbColor);  -> the closer to value 0,0,0, the more faded the light is
+    bulbPower = bulbPower > 0 ? bulbPower : 1.0f;
+    bulbLight[0] = bulbPower;
+    bulbLight[1] = bulbPower;
+    bulbLight[2] = bulbPower;
+    bulbLight[3] = 1.0f;
+
+    std::cout << bulbLight[0] << bulbLight[1] << bulbLight[2] << bulbLight[3] << std::endl;
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, bulbLight);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, bulbLight);
+
+}
+GLuint texture = 0;
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     glMatrixMode(GL_MODELVIEW);     // To operate on model-view matrix
     glLoadIdentity();                 // Reset the model-view matrix
 
@@ -99,12 +121,20 @@ void display() {
         targetX, targetY, targetZ,  // Look-at target
         upX, upY, upZ);
 
-
     try {
         glPushMatrix();
+
+        /* Texture reading*/
+        texture = LoadTexture("images/wooden-texture.bmp");
+        /*end of image reading*/
+        /* Texture binding */
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, texture);
+
         /* Table */
-        material.metal("frontBack", blueColor);
-        rectangle.drawRectangle(4.0, 2.6, tableHeight, 0, 0, 0.5);
+        material.metal("frontBack", whiteColor);
+        rectangle.drawRectangle(4.0, 2.6, tableHeight, 0, 0, 0.5, texture);
+        glDisable(GL_TEXTURE_2D);
 
         glTranslatef(-1.3f, tableHeight / 2.0f, 0.8f);  // Move right and into the screen
         glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
@@ -247,28 +277,30 @@ void display() {
         /* Interactive  book */
         glPushMatrix();
         glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
+       
         material.plastic("frontBack", red);
-        rectangle.drawRectangle(0.3, 0.2, 0.01, 0.0f, 0.0f, 1.0f);
+        rectangle.drawRectangle(0.3, 0.2, 0.01, 0.0f, 0.0f, 1.0f, 0);
         material.noMaterial();
 
         for (int i = 0; i < 10; i++) {
             glTranslatef(0.0f, -0.01f, 0.0f);
             if (i == 9) {
-                /*           glTranslatef(0.0f, -0.1f, 0.1f);
-                           glRotatef(-90, 1.0f, 0.0f, 0.0f);*/
+                /* glTranslatef(0.0f, -0.1f, 0.1f);
+                   glRotatef(-90, 1.0f, 0.0f, 0.0f);
+                */
                 glTranslatef(0.0f, -bookMovement, bookMovement);
                 glRotatef(-bookMovementDegree, 1.0f, 0.0f, 0.0f);
                 material.plastic("frontBack", red);
             }
             else
             {
+
                 material.plastic("frontBack", whiteColor);
             }
-            rectangle.drawRectangle(0.3f, 0.2f, 0.01f, 0, 0, 0);
+            rectangle.drawRectangle(0.3f, 0.2f, 0.01f, 0, 0, 0, texture);
             material.noMaterial();
         }
         glPopMatrix();
-
 
 
         glPushMatrix();
@@ -293,39 +325,40 @@ void display() {
         /* PC's screen */
         glPushMatrix();
         glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-        rectangle.drawRectangle(0.3f, 0.2f, 0.01f, 0.0f, 0.0f, 1.0f);
+        rectangle.drawRectangle(0.3f, 0.2f, 0.01f, 0.0f, 0.0f, 1.0f, 0);
         glTranslatef(0.0f, 0.0f, 0.01f);
-        rectangle.drawRectangle(0.15f, 0.14f, 0.22f, 0.0f, 0.0f, 1.0f);
+        rectangle.drawRectangle(0.15f, 0.14f, 0.22f, 0.0f, 0.0f, 1.0f, 0);
         glTranslatef(0.0f, -0.4f, 0.0f);
         float blackColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
         material.metal("frontBack", blackColor);
-        rectangle.drawRectangle(0.8f, 0.05, 0.6f, 0.0f, 0.0f, 1.0f);
+        rectangle.drawRectangle(0.8f, 0.05, 0.6f, 0.0f, 0.0f, 1.0f, 0);
         material.noMaterial();
         glPopMatrix();
 
         glPopMatrix();
         glPopMatrix(); // whole lamp matrix or whote table matrix (I'm not sure)
 
-        glutSwapBuffers();
+
     }
     catch (std::invalid_argument e) {
         std::cerr << "Exception caught: " << e.what() << std::endl;
     }
     
+    glutSwapBuffers();
 }
 
 void specialKeys(int key, int x, int y) {
     if (key == GLUT_KEY_UP) {
-        cameraX += cameraRotationUnit;
+        cameraX += 10 * cameraRotationUnit;
     }
     else if (key == GLUT_KEY_DOWN) {
-        cameraX -= cameraRotationUnit;
+        cameraX -= 10 * cameraRotationUnit;
     }
     else if (key == GLUT_KEY_RIGHT) {
-        cameraZ += cameraRotationUnit;
+        cameraZ += 10*cameraRotationUnit;
     }
     else if (key == GLUT_KEY_LEFT) {
-        cameraZ -= cameraRotationUnit;
+        cameraZ -= 10 * cameraRotationUnit;
     }
     else if (key == GLUT_KEY_F1) {
         rotateDegreeMain += jointRotationUnit;
@@ -338,6 +371,9 @@ void specialKeys(int key, int x, int y) {
     }
     else if (key == GLUT_KEY_F4) {
         rotateDegreeSecond -= jointRotationUnit;
+    }
+    else if (key == GLUT_KEY_F5) {
+        controlLightPower();
     }
     else if (key == GLUT_KEY_SHIFT_L) {
         if(bookMovement < 1 && bookMovementDegree < 90)
@@ -402,20 +438,18 @@ int main(int argc, char* argv[]) {
     /* Glut menu: */
     // Create a menu
     glutCreateMenu(menuCallback);
-
     // Add menu items
     glutAddMenuEntry("Reset scene (Press here!) ", GlutMenu::MENU_FIRST);
     glutAddMenuEntry("SHIFT R+L to Open/Close the red book ", GlutMenu::MENU_SECOND);
     glutAddMenuEntry("F1-F4 to control the bulb's joints (to move it)", GlutMenu::MENU_THIRD);
     glutAddMenuEntry("Mouse-Wheel & Arrow Keys to control the camera ", GlutMenu::MENU_FOURTH);
     glutAddMenuEntry("Left mouse to turn on/off the bulb ", GlutMenu::MENU_FIFTH);
-    glutAddMenuEntry("Thanks for using my program!! ", GlutMenu::MENU_SIXTH);
-
+    glutAddMenuEntry("F5 to control the light's power", GlutMenu::MENU_SIXTH);
+    glutAddMenuEntry("F8 to control the bulb's top joint ", GlutMenu::MENU_SEVENTH);
+    glutAddMenuEntry("Thanks for using my program!! ", GlutMenu::MENU_EIGHTH);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 
-    //glutMouseFunc(cameraMovement);
     initGL();                       // Our own OpenGL initialization
-    //glutTimerFunc(0, timer, 0);     // First timer call immediately [NEW]
     glutMainLoop();                 // Enter the infinite event-processing loop
     return 0;
 }

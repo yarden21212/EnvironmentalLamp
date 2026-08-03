@@ -10,3 +10,15 @@ extern double upX, upY, upZ;
 extern double xwMin, ywMin, xwMax, ywMax;
 /* Near, Far planes */
 extern double nearPlane, farPlane;
+
+/* Operation variables */
+extern GLfloat rotateDegreeMain;
+extern GLfloat rotateDegreeSecond;
+extern GLfloat rotateDegreeTopHinge;
+
+/* Bulb: */
+extern bool lightOn;
+extern GLfloat jointRotationUnit;
+
+/* Books */
+extern GLfloat bookMovementDegree;

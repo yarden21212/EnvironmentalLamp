@@ -16,6 +16,8 @@ public:
         MENU_FOURTH,
         MENU_FIFTH,
         MENU_SIXTH,
+        MENU_SEVENTH,
+        MENU_EIGHTH,
     };
 
     // Assign a default value

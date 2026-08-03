@@ -97,7 +97,8 @@ void Cubes::drawCube(double r, double g, double b){
         glVertex3f(1.0f, -1.0f, -1.0f);
     glEnd();  // End of drawing color-cube
 }
-void Rectangles::drawRectangle(double width, double length, double height, double r, double g, double b) {
+void Rectangles::drawRectangle(double width, double length, double height, double r, double g, double b, GLuint texture) {
+
 
     float halfWidth = width / 2;
     float halfLength = length / 2;
@@ -107,7 +108,6 @@ void Rectangles::drawRectangle(double width, double length, double height, doubl
     // Define vertices in counter-clockwise (CCW) order with normal pointing out
     glColor3f(r, g, b);
     glNormal3d(0.0f, 1.0f, 0.0f);
-
 
     /* 
         I couldn't figure out how to make the light get stronger as you get closer to the table.
@@ -123,30 +123,33 @@ void Rectangles::drawRectangle(double width, double length, double height, doubl
 
     float stepX = width / divisionsX;
     float stepZ = length / divisionsZ;
-    for (int x = 0; x < divisionsX; x++) {
-        for (int z = 0; z < divisionsZ; z++) {
+    
 
-            float x1 = -halfWidth + x * stepX;
-            float x2 = x1 + stepX;
+    /* If no texture is desired */
+    if (texture == 0) {
+        glBegin(GL_QUADS); // Begin drawing the color cube with 6 quads
+        for (int x = 0; x < divisionsX; x++) {
+            for (int z = 0; z < divisionsZ; z++) {
 
-            // For each x we get a range from x1 to x2 and inside this range we create 20 tiny rectangles with 20 different values of z1 and z2
-            float z1 = -halfLength + z * stepZ;
-            float z2 = z1 + stepZ;
+                float x1 = -halfWidth + x * stepX;
+                float x2 = x1 + stepX;
 
-            glBegin(GL_QUADS);
+                // For each x we get a range from x1 to x2 and inside this range we create 20 tiny rectangles with 20 different values of z1 and z2
+                float z1 = -halfLength + z * stepZ;
+                float z2 = z1 + stepZ;
 
-            glNormal3f(0.0f, 1.0f, 0.0f);
+                glBegin(GL_QUADS);
+                // Top face (y = -1.0f)
+                glNormal3f(0.0f, 1.0f, 0.0f);
+                                // Top face (y = -1.0f)
+                glVertex3f(x1, top, z1);
+                glVertex3f(x1, top, z2);
+                glVertex3f(x2, top, z2);
+                glVertex3f(x2, top, z1);
 
-            glVertex3f(x1, top, z1);
-            glVertex3f(x1, top, z2);
-            glVertex3f(x2, top, z2);
-            glVertex3f(x2, top, z1);
-
-            glEnd();
+            }
         }
-    }
-
-    glBegin(GL_QUADS);                // Begin drawing the color cube with 6 quads
+            
         // Bottom face (y = -1.0f)
         //glColor3f(1.0f, 0.5f, 0.0f);     // Orange
         glNormal3d(0.0f, -1.0f, 0.0f);
@@ -157,7 +160,7 @@ void Rectangles::drawRectangle(double width, double length, double height, doubl
 
         // Front face  (z = 1.0f)
         //glColor3f(1.0f, 0.0f, 0.0f);     // Red
-        glNormal3d(0.0f, 0.0f, 1.0f);        
+        glNormal3d(0.0f, 0.0f, 1.0f);
         glVertex3f(halfWidth, top, halfLength);
         glVertex3f(-halfWidth, top, halfLength);
         glVertex3f(-halfWidth, -top, halfLength);
@@ -180,13 +183,103 @@ void Rectangles::drawRectangle(double width, double length, double height, doubl
         glVertex3f(-halfWidth, -top, halfLength);
 
         // Right face (x = 1.0f)
-    /*        glColor3f(r, g, b);   */ 
+    /*        glColor3f(r, g, b);   */
         glNormal3d(1.0f, 0.0f, 0.0f);
         glVertex3f(halfWidth, top, -halfLength);
         glVertex3f(halfWidth, top, halfLength);
         glVertex3f(halfWidth, -top, halfLength);
         glVertex3f(halfWidth, -top, -halfLength);
-    glEnd();
+        glEnd();
+    }
+    else { // With texture
+        glBegin(GL_QUADS);                // Begin drawing the color cube with 6 quads
+        for (int x = 0; x < divisionsX; x++) {
+            for (int z = 0; z < divisionsZ; z++) {
+
+                float x1 = -halfWidth + x * stepX;
+                float x2 = x1 + stepX;
+
+                // For each x we get a range from x1 to x2 and inside this range we create 20 tiny rectangles with 20 different values of z1 and z2
+                float z1 = -halfLength + z * stepZ;
+                float z2 = z1 + stepZ;
+
+
+                glNormal3f(0.0f, 1.0f, 0.0f);
+
+                // Top face (y = -1.0f)
+                glTexCoord2f(0.0f, 0.0f);
+                glVertex3f(x1, top, z1);
+                glTexCoord2f(1.0f, 0.0f);
+                glVertex3f(x1, top, z2);
+                glTexCoord2f(1.0f, 1.0f);
+                glVertex3f(x2, top, z2);
+                glTexCoord2f(0.0f, 1.0f);
+                glVertex3f(x2, top, z1);
+
+            }
+        }
+        // Bottom face (y = -1.0f)
+        //glColor3f(1.0f, 0.5f, 0.0f);     // Orange
+        glNormal3d(0.0f, -1.0f, 0.0f);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(-halfWidth, -top, -halfLength);
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(halfWidth, -top, -halfLength);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(halfWidth, -top, halfLength);
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(-halfWidth, -top, halfLength);
+
+        // Front face  (z = 1.0f)
+        //glColor3f(1.0f, 0.0f, 0.0f);     // Red
+        glNormal3d(0.0f, 0.0f, 1.0f);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(halfWidth, top, halfLength);
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(-halfWidth, top, halfLength);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(-halfWidth, -top, halfLength);
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(halfWidth, -top, halfLength);
+
+        // Back face (z = -1.0f)
+        //glColor3f(1.0f, 1.0f, 0.0f);     // Yellow
+        glNormal3d(0.0f, 0.0f, -1.0f);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(halfWidth, -top, -halfLength);
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(-halfWidth, -top, -halfLength);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(-halfWidth, top, -halfLength);
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(halfWidth, top, -halfLength);
+
+        // Left face (x = -1.0f)
+        //glColor3f(0.0f, 0.0f, 1.0f);     // Blue
+        glNormal3d(-1.0f, 0.0f, 0.0f);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(-halfWidth, top, halfLength);
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(-halfWidth, top, -halfLength);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(-halfWidth, -top, -halfLength);
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(-halfWidth, -top, halfLength);
+
+        // Right face (x = 1.0f)
+    /*        glColor3f(r, g, b);   */
+        glNormal3d(1.0f, 0.0f, 0.0f);
+        glTexCoord2f(0.0f, 0.0f);
+        glVertex3f(halfWidth, top, -halfLength);
+        glTexCoord2f(1.0f, 0.0f);
+        glVertex3f(halfWidth, top, halfLength);
+        glTexCoord2f(1.0f, 1.0f);
+        glVertex3f(halfWidth, -top, halfLength);
+        glTexCoord2f(0.0f, 1.0f);
+        glVertex3f(halfWidth, -top, -halfLength);
+        glEnd();
+    }
+    
 }
 
 void Pyramid::drawPyramid(double width, double length, double height, double r, double g, double b) {

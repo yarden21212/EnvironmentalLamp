@@ -130,6 +130,7 @@
     <ClCompile Include="Materials.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Shapes.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CommonLibraries.h" />
@@ -138,6 +139,7 @@
     <ClInclude Include="Materials.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Shapes.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

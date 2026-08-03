@@ -3,8 +3,9 @@
 #include <iostream>
 #include <GL/freeglut.h>
 #include "CommonLibraries.h"
-#include "Menu.h"
 
+#include "Menu.h"
+#include "GlobalVariables.h"
 #include "Shapes.h"
 #include "Materials.h"
 
@@ -68,12 +69,14 @@ GLfloat specular[] = { 1.0f,1.0f,1.0f,1.0f };
 GLfloat whiteSpecular[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 GLfloat emission[] = { 1.0f, 1.0f, 0.5f, 1.0f };
 GLfloat bulbEmission[] = { 1.0f, 1.0f, 0.7f, 1.0f };
-GLfloat bulbLight[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 /* Camera */
 GLfloat cameraRotationUnit = 0.01f;
 /* Light */
 GLfloat noEmission[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+int lightPower = 0;
+GLfloat bulbPower = 1.0f;
+GLfloat bulbLight[] = { bulbPower, bulbPower, bulbPower, 1.0f };
 /* Bulb: */
 GLfloat bulbColor[] = { 1.0f, 1.0f, 0.93f, 1.0f };
 GLfloat bulbPos[] = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -84,7 +87,6 @@ GLfloat jointRotationUnit = 1.0f;
 GLfloat bookMovement = 0.03f;
 GLfloat bookMovementDegree = 30.0f;
 GLfloat bookOpeningSpeed = 0.01f;
-
 
 
 /* Menu */

@@ -23,6 +23,17 @@ void GlutMenu::menu(int item)
         upX = 0.0f, upY = 1.0f, upZ = 0.0f;
         xwMin = -1.0f, ywMin = -1.0f, xwMax = 1.0f, ywMax = 1.0f;
         nearPlane = 1.0f, farPlane = 30.0f;
+
+        rotateDegreeMain = 0;
+        rotateDegreeSecond = 0;
+        rotateDegreeTopHinge = 0;
+
+        /* Bulb: */
+        lightOn = false;
+
+        /* Books */
+        bookMovementDegree;
+
     }
     case MENU_SECOND:
     case MENU_THIRD:  
