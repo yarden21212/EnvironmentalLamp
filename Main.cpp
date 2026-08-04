@@ -5,6 +5,7 @@
     - How to draw cylinder from https://gist.github.com/nikAizuddin/5ea402e9073f1ef76ba6
     - How to work with the mouse - used documentations 7.4 - 7.6: https://www.opengl.org/resources/libraries/glut/spec3/node49.html 
     - How to create pop-up menu (used charGPT for completing itm because it missed few explanations): https://stackoverflow.com/questions/14370/glut-pop-up-menus + https://www.opengl.org/resources/libraries/glut/spec3/node37.html#SECTION00072000000000000000
+    - Used chatGPT for deepening my knowledge and to understand subjects I didn't understand completely
 */
 
 /* For image reading */
@@ -16,43 +17,26 @@
 #include "Main.h"
 #include "Texture.h"
 
+/*
+    Create a matrix full of z-axis locations for the stars we will generate in the sky.
+    We do it once, so OpenGL doesn't need to regenerate the stars for every new frame which is way too heavy and inefficient.
+*/
+void starsMatrixCreation(int distance) {
+    float randomDistance;
+    for (int i = 0; i < starsCount; i++) {
+        if (i % 2 == 0)
+            randomDistance = rand() % 5;
+        else
+            randomDistance = -(rand() % 5);
 
-bool direction = false; // movement -> down
-GLfloat rotateStartingValue = 0.0f;
+        stars[i] = randomDistance;
+    }
+}
+
 void menuCallback(int item)
 {
     gMenu.menu(item);
 }
-
-/* Initialize OpenGL Graphics */
-void initGL() {
-    glClearColor(0.16f, 0.20f, 0.32f, 1.0f); // Set background color to black and opaque
-    glClearDepth(1.0f);                   // Set background depth to farthest
-    glEnable(GL_DEPTH_TEST);   // Enable depth testing for z-culling
-
-    glDepthFunc(GL_LEQUAL);    // Set the type of depth-test
-    glShadeModel(GL_SMOOTH);   // Enable smooth shading
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);  // Nice perspective corrections
-
-    glEnable(GL_NORMALIZE); // convert every normal to a unit-normal. (For every glNormal3d(x, y, z); it does calculation and converts to a unit-vector)
-
-    /* Global Lighting Properties */
-    float ambientLevel[] = { 0.15f, 0.15f, 0.15f, 1.0f };
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLevel);
-
-    // Enable lighting
-    glEnable(GL_LIGHTING);
-    /* LIGHT0 */
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, bulbLight);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, bulbLight);
-    /* LIGHT1 */
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, sunLight);
-    glLightfv(GL_LIGHT1, GL_SPECULAR, redColor);
-    /* LIGHT2 */
-    glLightfv(GL_LIGHT2, GL_DIFFUSE, bulbLight);
-    glLightfv(GL_LIGHT2, GL_SPECULAR, redColor);
-}
-
 
 void generateBook(float color[]) {
     material.plastic("frontBack", redColor);
@@ -115,22 +99,44 @@ void controlLightPower() {
     bulbLight[2] = bulbPower;
     bulbLight[3] = 1.0f;
 
-    std::cout << bulbLight[0] << bulbLight[1] << bulbLight[2] << bulbLight[3] << std::endl;
+    //std::cout << bulbLight[0] << bulbLight[1] << bulbLight[2] << bulbLight[3] << std::endl;
     glLightfv(GL_LIGHT0, GL_DIFFUSE, bulbLight);
     glLightfv(GL_LIGHT0, GL_SPECULAR, bulbLight);
 
 }
-GLuint texture = 0;
 
-void generateStars() {
-    glPushMatrix();
-    material.plastic("frontBack", redColor);
-    glEnable(GL_LIGHT2);
-    material.noMaterial();
+/* Initialize OpenGL Graphics */
+void initGL() {
+    glClearColor(0.16f, 0.20f, 0.32f, 1.0f); // Set background color to black and opaque
+    glClearDepth(1.0f);                   // Set background depth to farthest
+    glEnable(GL_DEPTH_TEST);   // Enable depth testing for z-culling
+
+    glDepthFunc(GL_LEQUAL);    // Set the type of depth-test
+    glShadeModel(GL_SMOOTH);   // Enable smooth shading
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);  // Nice perspective corrections
+
+    glEnable(GL_NORMALIZE); // convert every normal to a unit-normal. (For every glNormal3d(x, y, z); it does calculation and converts to a unit-vector)
+
+    /* Global Lighting Properties */
+    float ambientLevel[] = { 0.15f, 0.15f, 0.15f, 1.0f };
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLevel);
+
+    // Enable lighting
+    glEnable(GL_LIGHTING);
+    /* LIGHT0 -> For the bulb */
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, bulbLight);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, bulbLight);
+    /* LIGHT1 -> For the sun */
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, sunLight);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, redColor);
+    /* LIGHT2 -> For the stars*/
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, starLight);
 
 
-    glutPostRedisplay(); // Request a redraw to update the camera
+    starsMatrixCreation(20);
+
 }
+
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -143,16 +149,26 @@ void display() {
         upX, upY, upZ);
 
     try {
+        /* Sun */
         glPushMatrix();
         material.plastic("frontBack", redColor);
         skies.generateSun();
+        material.noMaterial();
+        glPopMatrix();
+        
+        /* Stars */
+        glPushMatrix();
+        material.plastic("frontBack", whiteColor);
+        skies.generateStars(10);
         material.noMaterial();
         glPopMatrix();
 
 
         glPushMatrix();
         /* Texture reading*/
-        texture = LoadTexture("images/wooden-texture.bmp");
+        // texture != 1 means if we didn't load a texture yet then load -> load a texture is a super slow operation, and it slowed down my whole program, this small fix, fixed the whole program's speed
+        if(texture != 1) 
+            texture = LoadTexture("images/wooden-texture.bmp");
         /*end of image reading*/
         /* Texture binding */
         glEnable(GL_TEXTURE_2D);
@@ -185,8 +201,6 @@ void display() {
         /* Lamp's arms*/
         material.metal("frontBack", silverColor);
         glTranslatef(0.0f, 0.0f, baseHeight / 2.5f);
-        const GLfloat armRadius = 0.03f;
-        const GLfloat armOffset = 0.05f;
         glPushMatrix();
 
         glTranslatef(-armOffset, -0.1f, 0.0f);
@@ -267,7 +281,6 @@ void display() {
         glPushMatrix();
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, bulbLight);
         cylinder.drawCylinder(0.03f, 0.15f, 0, 0, 0);
-        float noAmbient[] = { 0.0f, 0.0f, 0.0f, 1.0f };
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, noAmbient);
 
         /* Bulb */
@@ -357,14 +370,13 @@ void display() {
         glTranslatef(0.0f, 0.0f, 0.01f);
         rectangle.drawRectangle(0.15f, 0.14f, 0.22f, 0.0f, 0.0f, 1.0f, 0);
         glTranslatef(0.0f, -0.4f, 0.0f);
-        float blackColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
         material.metal("frontBack", blackColor);
         rectangle.drawRectangle(0.8f, 0.05, 0.6f, 0.0f, 0.0f, 1.0f, 0);
         material.noMaterial();
         glPopMatrix();
 
         glPopMatrix();
-        glPopMatrix(); // whole lamp matrix or whote table matrix (I'm not sure)
+        glPopMatrix();
 
 
     }
@@ -378,6 +390,7 @@ void display() {
 void specialKeys(int key, int x, int y) {
     if (key == GLUT_KEY_UP) {
         cameraX += 10 * cameraRotationUnit;
+        std::cout << cameraX << std::endl;
     }
     else if (key == GLUT_KEY_DOWN) {
         cameraX -= 10 * cameraRotationUnit;
@@ -389,16 +402,21 @@ void specialKeys(int key, int x, int y) {
         cameraZ -= 10 * cameraRotationUnit;
     }
     else if (key == GLUT_KEY_F1) {
-        rotateDegreeMain += jointRotationUnit;
+        if(rotateDegreeMain < 95)
+            rotateDegreeMain += jointRotationUnit;
     }
     else if (key == GLUT_KEY_F2) {
-        rotateDegreeMain -= jointRotationUnit;
+        if (rotateDegreeMain > -75) {
+            rotateDegreeMain -= jointRotationUnit;
+        }
     }
     else if (key == GLUT_KEY_F3) {
-        rotateDegreeSecond += jointRotationUnit;
+        if(rotateDegreeSecond < 85)
+            rotateDegreeSecond += jointRotationUnit;
     }
     else if (key == GLUT_KEY_F4) {
-        rotateDegreeSecond -= jointRotationUnit;
+        if(rotateDegreeSecond > -65)
+            rotateDegreeSecond -= jointRotationUnit;
     }
     else if (key == GLUT_KEY_F5) {
         controlLightPower();
@@ -432,7 +450,6 @@ void specialKeys(int key, int x, int y) {
         }
     }
 
-
     glutPostRedisplay(); // Request a redraw to update the camera
 }
 void reshape(GLsizei width, GLsizei height) {  // GLsizei for non-negative integer
@@ -453,6 +470,7 @@ void reshape(GLsizei width, GLsizei height) {  // GLsizei for non-negative integ
 }
 
 int main(int argc, char* argv[]) {
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH); // Enable double buffered mode
     glutInitWindowSize(640, 480);   // Set the window's initial width & height
@@ -473,7 +491,7 @@ int main(int argc, char* argv[]) {
     glutAddMenuEntry("Mouse-Wheel & Arrow Keys to control the camera ", GlutMenu::MENU_FOURTH);
     glutAddMenuEntry("Left mouse to turn on/off the bulb ", GlutMenu::MENU_FIFTH);
     glutAddMenuEntry("F5 to control the light's power", GlutMenu::MENU_SIXTH);
-    glutAddMenuEntry("F8 to control the bulb's top joint ", GlutMenu::MENU_SEVENTH);
+    glutAddMenuEntry("F8-F9 to control the bulb's top joint ", GlutMenu::MENU_SEVENTH);
     glutAddMenuEntry("Thanks for using my program!! ", GlutMenu::MENU_EIGHTH);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 

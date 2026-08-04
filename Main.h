@@ -63,6 +63,7 @@ GLfloat blueColor[] = { 0.27f, 0.51f, 0.71f, 1.0f };
 GLfloat whiteColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 GLfloat greenColor[] = { 0.0f, 1.0f, 0.0f, 1.0f };
 GLfloat yellowColor[] = { 1.0f, 1.0f, 0.0f, 1.0f };
+GLfloat blackColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
 
 /* Materials */
@@ -74,6 +75,7 @@ GLfloat bulbEmission[] = { 1.0f, 1.0f, 0.7f, 1.0f };
 /* Camera */
 GLfloat cameraRotationUnit = 0.01f;
 /* Light */
+GLfloat noAmbient[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 GLfloat noEmission[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 int lightPower = 0;
 GLfloat bulbPower = 1.0f;
@@ -83,6 +85,8 @@ GLfloat bulbColor[] = { 1.0f, 1.0f, 0.93f, 1.0f };
 GLfloat bulbPos[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 bool lightOn = false;
 GLfloat jointRotationUnit = 1.0f;
+const GLfloat armRadius = 0.03f;
+const GLfloat armOffset = 0.05f;
 
 /* Books */
 GLfloat bookMovement = 0.03f;
@@ -90,11 +94,19 @@ GLfloat bookMovementDegree = 30.0f;
 GLfloat bookOpeningSpeed = 0.01f;
 
 /* Sun */
-GLfloat sunTableRadius = 7.0f;
+GLfloat sunTableRadius = 20.0f;
 GLfloat degree = 0.0f;
 GLfloat sunPos[] = { 0.0f, 0.0f, 0.0f, 1.0f };
 GLfloat sunLight[] = { 0.45f, 0.0f, 0.0f, 1.0f };
 SkiesObjects skies;
 
+/* Stars */
+const int starsCount = 400;
+float stars[starsCount];
+float starLight[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+
 /* Menu */
 GlutMenu gMenu;
+
+/* Texture */
+GLuint texture = 0;

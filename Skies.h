@@ -7,4 +7,5 @@ class SkiesObjects {
 
 public:
 	void generateSun();
+	void generateStars(const int distance);
 };

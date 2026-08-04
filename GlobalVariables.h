@@ -1,4 +1,6 @@
 #pragma once
+/* The program needs to transfer data from one file to another, I did it with global variables */
+
 // Camera's position
 extern double cameraX, cameraY, cameraZ;
 // Look-At target (where the camera is facing)
@@ -42,4 +44,8 @@ extern GLfloat bookMovementDegree;
 extern GLfloat sunTableRadius;
 extern GLfloat degree;
 extern GLfloat sunPos[];
+
+/* Stars */
+extern const int starsCount;
+extern float stars[];
 

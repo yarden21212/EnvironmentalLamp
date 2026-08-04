@@ -1,6 +1,6 @@
 #include "Shapes.h"
 
-/* https://gist.github.com/nikAizuddin/5ea402e9073f1ef76ba6 */
+/* https://gist.github.com/nikAizuddin/5ea402e9073f1ef76ba6  -> Guide to build a cylinder */
 void Cylinders::drawCylinder(GLfloat radius, GLfloat height, GLubyte R, GLubyte G, GLubyte B) {
     GLfloat x = 0.0;
     GLfloat y = 0.0;

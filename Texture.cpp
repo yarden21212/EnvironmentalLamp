@@ -16,7 +16,7 @@ GLuint LoadTexture(const char* filename)
     err = fopen_s(&file, filename, "rb");
 
     if (err != 0) {
-        // Handle error (e.g., file not found, permission denied)
+        // Handle error 
         printf("Error opening file. Error code: %d so returned value 0 to work without texture\n", err);
         return 0;
     }
