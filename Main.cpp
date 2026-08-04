@@ -16,6 +16,9 @@
 #include "Main.h"
 #include "Texture.h"
 
+
+bool direction = false; // movement -> down
+GLfloat rotateStartingValue = 0.0f;
 void menuCallback(int item)
 {
     gMenu.menu(item);
@@ -39,13 +42,20 @@ void initGL() {
 
     // Enable lighting
     glEnable(GL_LIGHTING);
+    /* LIGHT0 */
     glLightfv(GL_LIGHT0, GL_DIFFUSE, bulbLight);
     glLightfv(GL_LIGHT0, GL_SPECULAR, bulbLight);
+    /* LIGHT1 */
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, sunLight);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, redColor);
+    /* LIGHT2 */
+    glLightfv(GL_LIGHT2, GL_DIFFUSE, bulbLight);
+    glLightfv(GL_LIGHT2, GL_SPECULAR, redColor);
 }
 
 
 void generateBook(float color[]) {
-    material.plastic("frontBack", red);
+    material.plastic("frontBack", redColor);
     rectangle.drawRectangle(0.3, 0.2, 0.01, 0.0f, 0.0f, 1.0f, 0);
     material.noMaterial();
 
@@ -111,6 +121,17 @@ void controlLightPower() {
 
 }
 GLuint texture = 0;
+
+void generateStars() {
+    glPushMatrix();
+    material.plastic("frontBack", redColor);
+    glEnable(GL_LIGHT2);
+    material.noMaterial();
+
+
+    glutPostRedisplay(); // Request a redraw to update the camera
+}
+
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);     // To operate on model-view matrix
@@ -123,7 +144,13 @@ void display() {
 
     try {
         glPushMatrix();
+        material.plastic("frontBack", redColor);
+        skies.generateSun();
+        material.noMaterial();
+        glPopMatrix();
 
+
+        glPushMatrix();
         /* Texture reading*/
         texture = LoadTexture("images/wooden-texture.bmp");
         /*end of image reading*/
@@ -255,6 +282,7 @@ void display() {
         }
         else {
             glDisable(GL_LIGHT0);
+            glutSolidSphere(0.05, 20, 20);
         }
 
 
@@ -278,7 +306,7 @@ void display() {
         glPushMatrix();
         glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
        
-        material.plastic("frontBack", red);
+        material.plastic("frontBack", redColor);
         rectangle.drawRectangle(0.3, 0.2, 0.01, 0.0f, 0.0f, 1.0f, 0);
         material.noMaterial();
 
@@ -290,7 +318,7 @@ void display() {
                 */
                 glTranslatef(0.0f, -bookMovement, bookMovement);
                 glRotatef(-bookMovementDegree, 1.0f, 0.0f, 0.0f);
-                material.plastic("frontBack", red);
+                material.plastic("frontBack", redColor);
             }
             else
             {

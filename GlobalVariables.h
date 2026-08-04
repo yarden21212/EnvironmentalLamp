@@ -16,9 +16,30 @@ extern GLfloat rotateDegreeMain;
 extern GLfloat rotateDegreeSecond;
 extern GLfloat rotateDegreeTopHinge;
 
+/* Colors */
+extern GLfloat silverColor[];
+extern GLfloat goldColor[];
+extern GLfloat copperColor[];
+extern GLfloat bronzeColor[];
+extern GLfloat redColor[];
+extern GLfloat blueColor[];
+extern GLfloat whiteColor[];
+extern GLfloat greenColor[];
+extern GLfloat yellowColor[];
+
+
+/* Materials */
+extern GLfloat noEmission[];
+
 /* Bulb: */
 extern bool lightOn;
 extern GLfloat jointRotationUnit;
 
 /* Books */
 extern GLfloat bookMovementDegree;
+
+/* Sun */
+extern GLfloat sunTableRadius;
+extern GLfloat degree;
+extern GLfloat sunPos[];
+

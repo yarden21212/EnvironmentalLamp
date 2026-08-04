@@ -8,6 +8,7 @@
 #include "GlobalVariables.h"
 #include "Shapes.h"
 #include "Materials.h"
+#include "Skies.h"
 
 #define PI 3.1415927
 
@@ -57,7 +58,7 @@ GLfloat silverColor[] = { 0.75f, 0.75f, 0.75f, 1.0f };
 GLfloat goldColor[] = { 0.83f, 0.69f, 0.22f, 1.0f };
 GLfloat copperColor[] = { 0.95f, 0.64f, 0.54f, 1.0f };
 GLfloat bronzeColor[] = { 0.80f, 0.50f, 0.20f, 1.0f };
-GLfloat red[] = { 1.0f,0.0f,0.0f,1.0f };
+GLfloat redColor[] = { 1.0f,0.0f,0.0f,1.0f };
 GLfloat blueColor[] = { 0.27f, 0.51f, 0.71f, 1.0f };
 GLfloat whiteColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 GLfloat greenColor[] = { 0.0f, 1.0f, 0.0f, 1.0f };
@@ -88,6 +89,12 @@ GLfloat bookMovement = 0.03f;
 GLfloat bookMovementDegree = 30.0f;
 GLfloat bookOpeningSpeed = 0.01f;
 
+/* Sun */
+GLfloat sunTableRadius = 7.0f;
+GLfloat degree = 0.0f;
+GLfloat sunPos[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+GLfloat sunLight[] = { 0.45f, 0.0f, 0.0f, 1.0f };
+SkiesObjects skies;
 
 /* Menu */
 GlutMenu gMenu;
