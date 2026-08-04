@@ -138,6 +138,15 @@ void initGL() {
 }
 
 
+/*
+    Hierarchical structure:
+    There is the table, which moves everything with it, so we have to create the first hierarchy with the table by glPushMatrix() and in the end of the code by glPopMatrix()
+    Then we have the objects which are controlled individually.
+    We have the lamp with the given hierarchy:
+    base -> base connector -> 2 bottom arms -> connector -> 2 top arms -> connector -> hinge -> bulb's cover -> bulb with light (source: LIGHT0)
+    book -> bottom cover -> 8 pages -> top cover 
+
+*/
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);     // To operate on model-view matrix
@@ -387,6 +396,7 @@ void display() {
     glutSwapBuffers();
 }
 
+/* different ways to interact with the program */
 void specialKeys(int key, int x, int y) {
     if (key == GLUT_KEY_UP) {
         cameraX += 10 * cameraRotationUnit;
@@ -452,6 +462,7 @@ void specialKeys(int key, int x, int y) {
 
     glutPostRedisplay(); // Request a redraw to update the camera
 }
+
 void reshape(GLsizei width, GLsizei height) {  // GLsizei for non-negative integer
    // Compute aspect ratio of the new window
    if (height == 0) height = 1;                // To prevent divide by 0
