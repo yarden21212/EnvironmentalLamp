@@ -50,3 +50,6 @@ For the best visual quality and the full interactive experience, you can downloa
 [Download Environmental Lamp](https://github.com/user-attachments/files/32807779/Environmental.Lamp.zip)
 
 I hope you enjoy this tiny but fun project. :)
+
+## Music:
+**[MapleStory BGM] 24 Shinin' Harbor**
