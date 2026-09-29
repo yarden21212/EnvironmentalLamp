@@ -17,6 +17,7 @@
 #include "Main.h"
 #include "Texture.h"
 
+
 /*
     Create a matrix full of z-axis locations for the stars we will generate in the sky.
     We do it once, so OpenGL doesn't need to regenerate the stars for every new frame which is way too heavy and inefficient.
@@ -400,7 +401,7 @@ void display() {
 void specialKeys(int key, int x, int y) {
     if (key == GLUT_KEY_UP) {
         cameraX += 10 * cameraRotationUnit;
-        std::cout << cameraX << std::endl;
+        //std::cout << cameraX << std::endl;
     }
     else if (key == GLUT_KEY_DOWN) {
         cameraX -= 10 * cameraRotationUnit;
@@ -449,14 +450,14 @@ void specialKeys(int key, int x, int y) {
         if (rotateDegreeTopHinge >= -50)
         {
             rotateDegreeTopHinge -= 1;
-            std::cout << "top hinge: " << rotateDegreeTopHinge << std::endl;
+            //std::cout << "top hinge: " << rotateDegreeTopHinge << std::endl;
         }
     }
     else if (key == GLUT_KEY_F9) {
         if (rotateDegreeTopHinge < 0)
         {
             rotateDegreeTopHinge += 1;
-            std::cout << "top hinge: " << rotateDegreeTopHinge << std::endl;
+            //std::cout << "top hinge: " << rotateDegreeTopHinge << std::endl;
         }
     }
 
@@ -487,6 +488,10 @@ int main(int argc, char* argv[]) {
     glutInitWindowSize(640, 480);   // Set the window's initial width & height
     glutInitWindowPosition(50, 50); // Position the window's initial top-left corner
     glutCreateWindow(title);          // Create window with the given title
+
+    //music.setSoundPath("Sounds/Orbis.wav");
+    //music.play();
+
     glutDisplayFunc(display);       // Register callback handler for window re-paint event
     glutReshapeFunc(reshape);       // Register callback handler for window re-size event
     glutSpecialFunc(specialKeys);
@@ -503,7 +508,8 @@ int main(int argc, char* argv[]) {
     glutAddMenuEntry("Left mouse to turn on/off the bulb ", GlutMenu::MENU_FIFTH);
     glutAddMenuEntry("F5 to control the light's power", GlutMenu::MENU_SIXTH);
     glutAddMenuEntry("F8-F9 to control the bulb's top joint ", GlutMenu::MENU_SEVENTH);
-    glutAddMenuEntry("Thanks for using my program!! ", GlutMenu::MENU_EIGHTH);
+    glutAddMenuEntry("Turn On/Off Music ", GlutMenu::MENU_EIGHTH);
+    glutAddMenuEntry("Thanks for using my program!! ", GlutMenu::MENU_NINTH);
     glutAttachMenu(GLUT_RIGHT_BUTTON);
 
     initGL();                       // Our own OpenGL initialization

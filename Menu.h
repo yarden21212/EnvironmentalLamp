@@ -1,12 +1,14 @@
 #pragma once
 
+#include "Music.h"
+
+
 class GlutMenu {
 
-
+private:
+    Music music;
 
 public:
-
-
     // Menu items
     enum MENU_TYPE
     {
@@ -18,6 +20,7 @@ public:
         MENU_SIXTH,
         MENU_SEVENTH,
         MENU_EIGHTH,
+        MENU_NINTH,
     };
 
     // Assign a default value

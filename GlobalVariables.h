@@ -49,3 +49,5 @@ extern GLfloat sunPos[];
 extern const int starsCount;
 extern float stars[];
 
+///* Music */
+//extern Music music;

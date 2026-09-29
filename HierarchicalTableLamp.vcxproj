@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -102,13 +102,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Public\Programming Projects\OpenGL\freeglut-MSVC-3.0.0-2.mp\freeglut\include;C:\Users\Public\Programming Projects\OpenGL\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include;C:\Users\Public\Programming Projects\OpenGL\glew-2.3.1-win32\glew-2.3.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Public\Programming Projects\OpenGL\freeglut-MSVC-3.0.0-2.mp\freeglut\include;C:\Users\Public\Programming Projects\OpenGL\glew-2.3.1-win32\glew-2.3.1\include;C:\Users\Public\Programming Projects\OpenGL\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Public\Programming Projects\OpenGL\freeglut-MSVC-3.0.0-2.mp\freeglut\lib\x64;C:\Users\Public\Programming Projects\OpenGL\glew-2.3.1-win32\glew-2.3.1\lib\Release\x64;C:\Users\Public\Programming Projects\OpenGL\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>C:\Users\Public\Programming Projects\OpenGL\freeglut-MSVC-3.0.0-2.mp\freeglut\lib\x64\freeglut.lib;C:\Users\Public\Programming Projects\OpenGL\glew-2.3.1-win32\glew-2.3.1\lib\Release\x64\glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Public\Programming Projects\OpenGL\freeglut-MSVC-3.0.0-2.mp\freeglut\lib\x64;C:\Users\Public\Programming Projects\OpenGL\glew-2.3.1-win32\glew-2.3.1\lib\Release\x64;C:\Users\Public\Programming Projects\OpenGL\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\lib-vc2022</AdditionalLibraryDirectories>
+      <AdditionalDependencies>C:\Users\Public\Programming Projects\OpenGL\freeglut-MSVC-3.0.0-2.mp\freeglut\lib\x64\freeglut.lib;C:\Users\Public\Programming Projects\OpenGL\glew-2.3.1-win32\glew-2.3.1\lib\Release\x64\glew32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -119,16 +120,22 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\Users\Public\Programming Projects\OpenGL\freeglut-MSVC-3.0.0-2.mp\freeglut\include;C:\Users\Public\Programming Projects\OpenGL\glew-2.3.1-win32\glew-2.3.1\include;C:\Users\Public\Programming Projects\OpenGL\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\include</AdditionalIncludeDirectories>
+      <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\Public\Programming Projects\OpenGL\freeglut-MSVC-3.0.0-2.mp\freeglut\lib\x64;C:\Users\Public\Programming Projects\OpenGL\glew-2.3.1-win32\glew-2.3.1\lib\Release\x64;C:\Users\Public\Programming Projects\OpenGL\glfw-3.4.bin.WIN64\glfw-3.4.bin.WIN64\lib-vc2022</AdditionalLibraryDirectories>
+      <AdditionalDependencies>C:\Users\Public\Programming Projects\OpenGL\freeglut-MSVC-3.0.0-2.mp\freeglut\lib\x64\freeglut.lib;C:\Users\Public\Programming Projects\OpenGL\glew-2.3.1-win32\glew-2.3.1\lib\Release\x64\glew32.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Materials.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Music.cpp" />
     <ClCompile Include="Shapes.cpp" />
     <ClCompile Include="Skies.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -139,6 +146,7 @@
     <ClInclude Include="Main.h" />
     <ClInclude Include="Materials.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="Music.h" />
     <ClInclude Include="Shapes.h" />
     <ClInclude Include="Skies.h" />
     <ClInclude Include="Texture.h" />

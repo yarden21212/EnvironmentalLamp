@@ -9,6 +9,7 @@
 #include "Shapes.h"
 #include "Materials.h"
 #include "Skies.h"
+#include "Music.h"
 
 #define PI 3.1415927
 

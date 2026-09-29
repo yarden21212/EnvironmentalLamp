@@ -3,6 +3,7 @@
 #include "Menu.h"
 #include "CommonLibraries.h"
 #include "GlobalVariables.h"
+#include "Music.h"
 
 #include <GL/freeglut.h>
 
@@ -10,7 +11,8 @@
 // Global menu instance (if needed)
 extern GlutMenu gMenu;
 
-
+//Music music;
+//bool isOn = false; // Music state
 
 void GlutMenu::menu(int item)
 {
@@ -43,6 +45,17 @@ void GlutMenu::menu(int item)
     {
         show = (MENU_TYPE)item;
     }
+    case MENU_EIGHTH:
+        if (!music.getPlayStatus()) {
+            music.setSoundPath("Sounds/Orbis.wav");
+            music.setPlayStatus(true);
+            music.playMusic();
+		}
+        else {
+            music.stopMusic();
+            music.setPlayStatus(false);
+        }
+
     break;
     default:
     {       /* Nothing */ }
