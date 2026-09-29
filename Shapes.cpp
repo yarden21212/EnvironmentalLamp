@@ -5,7 +5,7 @@ void Cylinders::drawCylinder(GLfloat radius, GLfloat height, GLubyte R, GLubyte 
     GLfloat x = 0.0;
     GLfloat y = 0.0;
     GLfloat angle = 0.0;
-    GLfloat angle_stepsize = 0.1;
+    GLfloat angle_stepsize = 0.1f;
 
     /** Draw the tube */
     glColor3ub(R - 40, G - 40, B - 40);
@@ -44,7 +44,7 @@ void Cylinders::drawCylinder(GLfloat radius, GLfloat height, GLubyte R, GLubyte 
     glEnd();
 }
 
-void Cubes::drawCube(double r, double g, double b){
+void Cubes::drawCube(float r, float g, float b){
 
     glBegin(GL_QUADS);                // Begin drawing the color cube with 6 quads
         // Top face (y = 1.0f)
@@ -97,12 +97,12 @@ void Cubes::drawCube(double r, double g, double b){
         glVertex3f(1.0f, -1.0f, -1.0f);
     glEnd();  // End of drawing color-cube
 }
-void Rectangles::drawRectangle(double width, double length, double height, double r, double g, double b, GLuint texture) {
+void Rectangles::drawRectangle(float width, float length, float height, float r, float g, float b, GLuint texture) {
 
 
-    float halfWidth = width / 2;
-    float halfLength = length / 2;
-    float top = height / 2;
+    float halfWidth = width / 2.0f;
+    float halfLength = length / 2.0f;
+    float top = height / 2.0f;
 
     // Top face (y = 1.0f)
     // Define vertices in counter-clockwise (CCW) order with normal pointing out
@@ -138,7 +138,6 @@ void Rectangles::drawRectangle(double width, double length, double height, doubl
                 float z1 = -halfLength + z * stepZ;
                 float z2 = z1 + stepZ;
 
-                glBegin(GL_QUADS);
                 // Top face (y = -1.0f)
                 glNormal3f(0.0f, 1.0f, 0.0f);
                                 // Top face (y = -1.0f)
@@ -282,7 +281,7 @@ void Rectangles::drawRectangle(double width, double length, double height, doubl
     
 }
 
-void Pyramid::drawPyramid(double width, double length, double height, double r, double g, double b) {
+void Pyramid::drawPyramid(float width, float length, float height, GLubyte r, GLubyte g, GLubyte b) {
 
     float halfWidth = width / 2;
     float halfLength = length / 2;

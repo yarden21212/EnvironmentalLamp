@@ -26,9 +26,9 @@ void starsMatrixCreation(int distance) {
     float randomDistance;
     for (int i = 0; i < starsCount; i++) {
         if (i % 2 == 0)
-            randomDistance = rand() % 5;
+            randomDistance = (rand() % 5)*1.0f;
         else
-            randomDistance = -(rand() % 5);
+            randomDistance = -1.0f*(rand() % 5);
 
         stars[i] = randomDistance;
     }
@@ -41,7 +41,7 @@ void menuCallback(int item)
 
 void generateBook(float color[]) {
     material.plastic("frontBack", redColor);
-    rectangle.drawRectangle(0.3, 0.2, 0.01, 0.0f, 0.0f, 1.0f, 0);
+    rectangle.drawRectangle(0.3f, 0.2f, 0.01f, 0.0f, 0.0f, 1.0f, 0);
     material.noMaterial();
 
     for (int i = 0; i < 10; i++) {
@@ -186,7 +186,7 @@ void display() {
 
         /* Table */
         material.metal("frontBack", whiteColor);
-        rectangle.drawRectangle(4.0, 2.6, tableHeight, 0, 0, 0.5, texture);
+        rectangle.drawRectangle(4.0f, 2.6f, tableHeight, 0, 0, 0.5f, texture);
         glDisable(GL_TEXTURE_2D);
 
         glTranslatef(-1.3f, tableHeight / 2.0f, 0.8f);  // Move right and into the screen
@@ -205,7 +205,7 @@ void display() {
         glTranslatef(0.0f, 0.0f, baseHeight);
         glPushMatrix();
         glRotatef(30.0f, 1.0f, 0.0f, 0.0f);
-        pyramid.drawPyramid(0.2, baseHeight * 2, 0.2f, 140, 140, 145);
+        pyramid.drawPyramid(0.2f, baseHeight * 2, 0.2f, 140, 140, 145);
         glPopMatrix();
 
         /* Lamp's arms*/
@@ -330,7 +330,7 @@ void display() {
         glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
        
         material.plastic("frontBack", redColor);
-        rectangle.drawRectangle(0.3, 0.2, 0.01, 0.0f, 0.0f, 1.0f, 0);
+        rectangle.drawRectangle(0.3f, 0.2f, 0.01f, 0.0f, 0.0f, 1.0f, 0);
         material.noMaterial();
 
         for (int i = 0; i < 10; i++) {
@@ -381,7 +381,7 @@ void display() {
         rectangle.drawRectangle(0.15f, 0.14f, 0.22f, 0.0f, 0.0f, 1.0f, 0);
         glTranslatef(0.0f, -0.4f, 0.0f);
         material.metal("frontBack", blackColor);
-        rectangle.drawRectangle(0.8f, 0.05, 0.6f, 0.0f, 0.0f, 1.0f, 0);
+        rectangle.drawRectangle(0.8f, 0.05f, 0.6f, 0.0f, 0.0f, 1.0f, 0);
         material.noMaterial();
         glPopMatrix();
 

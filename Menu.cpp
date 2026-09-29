@@ -34,16 +34,22 @@ void GlutMenu::menu(int item)
         lightOn = false;
 
         /* Books */
-        bookMovementDegree;
+        bookMovementDegree = 30.0f;
 
+        break;
     }
     case MENU_SECOND:
-    case MENU_THIRD:  
+        break;
+    case MENU_THIRD: 
+        break;
     case MENU_FOURTH:
+        break;
     case MENU_FIFTH:
+        break;
     case MENU_SIXTH:
     {
         show = (MENU_TYPE)item;
+        break;
     }
     case MENU_EIGHTH:
         if (!music.getPlayStatus()) {
@@ -55,8 +61,7 @@ void GlutMenu::menu(int item)
             music.stopMusic();
             music.setPlayStatus(false);
         }
-
-    break;
+        break;
     default:
     {       /* Nothing */ }
     break;

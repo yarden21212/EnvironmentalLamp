@@ -14,17 +14,17 @@ class Cubes {
     
 
 public:
-    void drawCube(double r, double g, double b);
+    void drawCube(float r, float g, float b);
 };
 
 class Rectangles {
 
 public:
-    void drawRectangle(double width, double length, double height, double r, double g, double b, GLuint texture);
+    void drawRectangle(float width, float length, float height, float r, float g, float b, GLuint texture);
 };
 
 class Pyramid {
 
 public:
-    void drawPyramid(double width, double length, double height, double r, double g, double b);
+    void drawPyramid(float width, float length, float height, GLubyte r, GLubyte g, GLubyte b);
 };

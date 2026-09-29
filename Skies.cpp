@@ -9,7 +9,7 @@ void SkiesObjects::generateSun() {
     GLfloat sunX = 0.0f;
     GLfloat sunY = sunTableRadius * cos(degree);
     GLfloat sunZ = sunTableRadius * sin(degree);
-    GLfloat sunLoc[] = { sunX, sunY, sunZ };
+    GLfloat sunLoc[] = { sunX, sunY, sunZ, 1.0f};
 
     glEnable(GL_LIGHT1);
     glTranslatef(sunX, sunY, sunZ);  // Move right and into the screen
@@ -24,13 +24,12 @@ void SkiesObjects::generateSun() {
 
 /* Generates approximately 400 stars in order to create a calmed environment */
 void SkiesObjects::generateStars(const int distance) {
-    int randomDistance;
 
     GLfloat starsX = 0.0f;
     GLfloat starsY = 0.5f;
-    GLfloat starsZ = distance;
+    GLfloat starsZ = distance*1.0f;
 
-    float starLoc[] = { starsX, starsY, starsZ };
+    float starLoc[] = { starsX, starsY, starsZ, 1.0f };
     glEnable(GL_LIGHT2);
 
 
